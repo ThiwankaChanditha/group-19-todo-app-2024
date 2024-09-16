@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { CheckBox } from 'react-native-web';
+import Checkbox from 'expo-checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { TaskContext } from '../context/TaskContext'; 
 
@@ -100,7 +100,7 @@ const TaskList = ({ route }) => {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item, index }) => (
                     <View style={styles.taskItem}>
-                        <CheckBox
+                        <Checkbox
                             style={{ marginRight: 10 }}
                             value={item.completed}
                             onValueChange={() => handleCompleteTask(item.id)}
