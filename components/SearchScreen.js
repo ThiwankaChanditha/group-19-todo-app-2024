@@ -17,7 +17,7 @@ const SearchScreen = () => {
         const filtered = tasks.filter(task => {
             const matchesQuery = task.topic.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesDate = selectedDate ? task.date === selectedDate.toISOString().split('T')[0] : true;
-            return matchesQuery && matchesDate;
+            return matchesQuery || matchesDate;
         });
         setFilteredTasks(filtered);
     };
