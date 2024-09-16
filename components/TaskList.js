@@ -10,7 +10,9 @@ const ListHeight = screenHeight * 0.6;
 
 const TaskList = ({ route }) => {
     const navigation = useNavigation();
-    const { tasks, setTasks, pinnedTasks, pinTask } = useContext(TaskContext); 
+    const { tasks, setTasks, pinnedTasks, pinTask } = useContext(TaskContext);
+    const [sortedTasks, setSortedTasks] = useState(tasks);
+    const [isSortedByPriority, setIsSortedByPriority] = useState(false);
 
     useEffect(() => {
         if (route.params?.newTask) {
@@ -27,12 +29,16 @@ const TaskList = ({ route }) => {
         }
     }, [route.params?.tasks]);
 
+    useEffect(() => {
+        setSortedTasks(tasks);
+    }, [tasks]);
+
     const handleEditTask = (task) => {
         navigation.navigate('AddTask', { task, editMode: true });
     };
 
     const handlePinTask = (task) => {
-        pinTask(task); 
+        pinTask(task);
     };
 
     const handleDeleteTask = (taskId) => {
@@ -50,36 +56,61 @@ const TaskList = ({ route }) => {
         navigation.navigate('SearchScreen', { tasks });
     };
 
+    const sortTasksByPriority = () => {
+        const sorted = [...tasks].sort((a, b) => {
+            const priorityOrder = { 'Low': 1, 'Medium': 2, 'High': 3 };
+            return priorityOrder[b.priority] - priorityOrder[a.priority];
+        });
+        setSortedTasks(sorted);
+        setIsSortedByPriority(true);
+    };
+
+    const moveTask = (index, direction) => {
+        const newTasks = [...sortedTasks];
+        const newIndex = index + direction;
+        if (newIndex >= 0 && newIndex < newTasks.length) {
+            [newTasks[index], newTasks[newIndex]] = [newTasks[newIndex], newTasks[index]];
+            setTasks(newTasks);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.navigate('StatScreen')}>
-                    <Text style={styles.icon}>📊</Text> 
+                    <Text style={styles.icon}>📊</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('PinnedScreen')}>
                     <Text style={styles.icon}>📌</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity onPress={searchTask}>
                     <Text style={styles.icon}>🔍</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={sortTasksByPriority}>
+                    <MaterialIcons name="sort" size={24} color="blue" />
+                </TouchableOpacity>
             </View>
+
             <FlatList
                 style={{ height: ListHeight }}
-                data={tasks}
+                data={isSortedByPriority ? sortedTasks : tasks}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                     <View style={styles.taskItem}>
-                      <CheckBox
-                        style={{ marginRight: 10 }}
-                        value={item.completed}
-                        onValueChange={() => handleCompleteTask(item.id)}
-                      />
+                        <CheckBox
+                            style={{ marginRight: 10 }}
+                            value={item.completed}
+                            onValueChange={() => handleCompleteTask(item.id)}
+                        />
                         <View style={{ flex: 1 }}>
                             <Text style={styles.taskText}>Topic: {item.topic}</Text>
                             <Text style={styles.taskText}>Description: {item.description}</Text>
                             <Text style={styles.taskText}>Category: {item.category}</Text>
                             <Text style={styles.taskText}>Date: {item.date}</Text>
+                            <Text style={styles.taskText}>Priority: {item.priority}</Text>
                         </View>
                         <TouchableOpacity onPress={() => handleEditTask(item)}>
                             <MaterialIcons name="edit" size={24} color="blue" />
@@ -96,9 +127,20 @@ const TaskList = ({ route }) => {
                                 color={pinnedTasks.find(t => t.id === item.id) ? 'green' : 'blue'} 
                             />
                         </TouchableOpacity>
+
+                        
+                        <View style={styles.moveButtonsContainer}>
+                            <TouchableOpacity onPress={() => moveTask(index, -1)}>
+                                <MaterialIcons name="arrow-upward" size={24} color="purple" />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => moveTask(index, 1)}>
+                                <MaterialIcons name="arrow-downward" size={24} color="purple" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
             />
+
             <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => navigation.navigate('AddTask', { editMode: false })}
@@ -143,6 +185,10 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         elevation: 2,
+    },
+    moveButtonsContainer: {
+        marginLeft: 10,
+        flexDirection: 'column',
     },
 });
 
