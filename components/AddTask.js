@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import Modal from 'react-native-modal';
 
@@ -14,14 +14,22 @@ const AddTask = ({ navigation, route }) => {
     const [newCategory, setNewCategory] = useState('');
     const [categories, setCategories] = useState([]);
     const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
+    const [priority, setPriority] = useState(route.params?.task?.priority || 'Low'); 
 
     const handleSaveTask = () => {
+
+        if (!topic.trim()) {
+            Alert.alert('Error', 'Topic cannot be empty');
+            return; 
+        }
+        
         const newTask = {
             id: route.params?.task?.id || Date.now(),
             topic,
             description,
             category: isAddingNewCategory ? newCategory : category,
             date: date ? date.toString() : 'No date selected',
+            priority,
         };
         const tasks = route.params?.tasks || [];
         navigation.navigate('TaskList', { newTask, editMode: route.params?.editMode });
@@ -92,6 +100,22 @@ const AddTask = ({ navigation, route }) => {
                             </TouchableOpacity>
                         </>
                     )}
+                </View>
+
+                
+                <View style={styles.priorityContainer}>
+                    <Text style={styles.label}>Select Priority:</Text>
+                    {['Low', 'Medium', 'High'].map((level) => (
+                        <TouchableOpacity
+                            key={level}
+                            onPress={() => setPriority(level)}
+                            style={[styles.priorityButton, priority === level && styles.selectedPriority]}
+                        >
+                            <Text style={[styles.priorityText, priority === level && styles.selectedPriorityText]}>
+                                {level}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
 
                 <TouchableOpacity style={styles.button} onPress={() => setShowCalendar(true)}>
@@ -236,6 +260,25 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'red',
         marginTop: 20,
+    },
+    priorityContainer: {
+        marginTop: 20,
+    },
+    priorityButton: {
+        padding: 10,
+        backgroundColor: '#ddd',
+        marginVertical: 5,
+        borderRadius: 5,
+    },
+    priorityText: {
+        fontSize: 16,
+        color: '#333',
+    },
+    selectedPriority: {
+        backgroundColor: '#4CAF50',
+    },
+    selectedPriorityText: {
+        color: 'white',
     },
 });
 
