@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import Modal from 'react-native-modal';
 
@@ -17,13 +17,19 @@ const AddTask = ({ navigation, route }) => {
     const [priority, setPriority] = useState(route.params?.task?.priority || 'Low'); 
 
     const handleSaveTask = () => {
+
+        if (!topic.trim()) {
+            Alert.alert('Error', 'Topic cannot be empty');
+            return; 
+        }
+        
         const newTask = {
             id: route.params?.task?.id || Date.now(),
             topic,
             description,
             category: isAddingNewCategory ? newCategory : category,
             date: date ? date.toString() : 'No date selected',
-            priority, // Save priority
+            priority,
         };
         const tasks = route.params?.tasks || [];
         navigation.navigate('TaskList', { newTask, editMode: route.params?.editMode });
