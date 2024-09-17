@@ -24,6 +24,7 @@ export default function App() {
                 <Stack.Screen name="StatScreen" component={StatScreen} />
                 <Stack.Screen name="PinnedScreen" component={PinnedScreen} />
                 <Stack.Screen name="SearchScreen" component={SearchScreen} />
+                <Stack.Screen name="DeleteTaskScreen" component={DeleteTaskScreen} />
                 
             </Stack.Navigator>
         </NavigationContainer>
