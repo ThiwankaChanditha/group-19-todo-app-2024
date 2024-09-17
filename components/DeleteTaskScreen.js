@@ -1,86 +1,78 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { TaskContext } from '../context/TaskContext';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const DeleteTaskScreen = ({ navigation, route }) => {
-  const { tasks, deleteTask } = useContext(TaskContext);
-  const [selectedTasks, setSelectedTasks] = useState([]);
+const DeleteTaskScreen = ({ route, navigation }) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredTasks, setFilteredTasks] = useState(route.params?.tasks || []);
 
-  const handleDelete = () => {
-    deleteTask(selectedTasks);
-    navigation.navigate('TaskList');
-  };
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        const filtered = route.params?.tasks.filter(task =>
+            task.topic.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredTasks(filtered);
+    };
 
-  const handleSelectTask = (taskId) => {
-    const isSelected = selectedTasks.includes(taskId);
-    if (isSelected) {
-      setSelectedTasks(selectedTasks.filter((id) => id !== taskId));
-    } else {
-      setSelectedTasks([...selectedTasks, taskId]);
-    }
-  };
+    const deleteTask = (taskId) => {
+        const updatedTasks = route.params?.tasks.filter(task => task.id !== taskId);
+        navigation.navigate('TaskList', { tasks: updatedTasks });
+        setFilteredTasks(updatedTasks);
+    };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Delete Tasks</Text>
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.taskItem}
-            onPress={() => handleSelectTask(item.id)}
-          >
-            <Text style={styles.taskText}>{item.topic}</Text>
-            {selectedTasks.includes(item.id) && (
-              <Text style={styles.selectedText}>Selected</Text>
-            )}
-          </TouchableOpacity>
-        )}
-      />
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-        <Text style={styles.deleteButtonText}>Delete Selected Tasks</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <TextInput
+                style={styles.searchBar}
+                placeholder="Search by Topic"
+                value={searchQuery}
+                onChangeText={handleSearch}
+            />
+            <FlatList
+                data={filteredTasks}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.taskItem}>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.taskText}>Topic: {item.topic}</Text>
+                            <Text style={styles.taskText}>Description: {item.description}</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => deleteTask(item.id)}>
+                            <MaterialIcons name="delete" size={24} color="red" />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#F5F5F5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  taskItem: {
-    padding: 15,
-    backgroundColor: 'white',
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  taskText: {
-    fontSize: 16,
-  },
-  selectedText: {
-    fontSize: 14,
-    color: 'green',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#F5F5F5',
+    },
+    searchBar: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+    },
+    taskItem: {
+        flexDirection: 'row',
+        backgroundColor: '#eee',
+        padding: 15,
+        borderRadius: 5,
+        marginVertical: 5,
+        alignItems: 'center',
+    },
+    taskText: {
+        fontSize: 16,
+        color: '#333',
+    },
 });
 
 export default DeleteTaskScreen;

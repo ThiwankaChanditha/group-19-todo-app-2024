@@ -7,7 +7,7 @@ import AddTask from './components/AddTask';
 import StatScreen from './components/StatScreen'
 import SearchScreen from './components/SearchScreen'
 import PinnedScreen from './components/PinnedScreen'
-//import DeleteTaskScreen from './components/DeleteTaskScreen'
+import DeleteTaskScreen from './components/DeleteTaskScreen'
 //import CompletedTask from './components/CompletedTask'
 import {TaskProvider} from './context/TaskContext'
 
