@@ -70,6 +70,8 @@ const LoginScreen = () => {
                     value={email}
                     onChangeText={text => setEmail(text)}
                     style={styles.input}
+                    accessibilityLabel="Your account email"
+                    accessibilityHint="Enter your account email"
                 />
                 <TextInput
                     placeholder='Password'
@@ -77,6 +79,8 @@ const LoginScreen = () => {
                     onChangeText={text => setPassword(text)}
                     style={styles.input}
                     secureTextEntry
+                    accessibilityLabel="Your account password"
+                    accessibilityHint="Enter your account password"
                 />
             </View>
 
@@ -84,6 +88,8 @@ const LoginScreen = () => {
                 <TouchableOpacity
                     onPress={handleLogin}
                     style={styles.button}
+                    accessibilityLabel="press to login"
+                    accessibilityHint="Login using the email and password"
                 >
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
@@ -91,6 +97,8 @@ const LoginScreen = () => {
                 <TouchableOpacity
                     onPress={handleSignUp}
                     style={[styles.button, styles.buttonOutline]}
+                    accessibilityLabel="Press to sign up"
+                    accessibilityHint="Sign up using email and password"
                 >
                     <Text style={styles.buttonOutlineText}>Register</Text>
                 </TouchableOpacity>

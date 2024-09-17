@@ -28,7 +28,11 @@ const PinnedScreen = ({ navigation }) => {
                             <Text style={styles.taskText}>Date: {item.date}</Text>
                             <Text style={styles.taskText}>Priority: {item.priority}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => handleUnpinTask(item.id)}>
+                        <TouchableOpacity 
+                            onPress={() => handleUnpinTask(item.id)}
+                            accessibilityLabel="Unpin selected task"
+                            accessibilityHint="Unpin the selected task"
+                        >
                             <MaterialIcons name="push-pin" size={24} color="red" />
                         </TouchableOpacity>
                     </View>

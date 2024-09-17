@@ -59,14 +59,23 @@ const DeleteTaskScreen = () => {
               {selectedTasks.includes(item.id) && <Text style={styles.selectedText}>Selected</Text>}
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleEditTask(item)}>
+            <TouchableOpacity 
+              onPress={() => handleEditTask(item)}
+              accessibilityLabel="Edit selected task"
+              accessibilityHint="Edit the selected task"
+            >
               <MaterialIcons name="edit" size={24} color="blue" />
             </TouchableOpacity>
           </View>
         )}
       />
 
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+      <TouchableOpacity 
+        style={styles.deleteButton} 
+        onPress={handleDelete}
+        accessibilityLabel="Delete selected task"
+        accessibilityHint="Delete the selected task"
+      >
         <Text style={styles.deleteButtonText}>Delete Selected Tasks</Text>
       </TouchableOpacity>
     </View>

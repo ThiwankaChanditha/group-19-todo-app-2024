@@ -78,19 +78,35 @@ const TaskList = ({ route }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.navigate('StatScreen')}>
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('StatScreen')}
+                    accessibilityLabel="Statistic page"
+                    accessibilityHint="Go to Task Statistics Page"
+                >
                     <Text style={styles.icon}>📊</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('PinnedScreen')}>
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('PinnedScreen')}
+                    accessibilityLabel="Pinned Task page"
+                    accessibilityHint="Go to Pinned Task page"
+                >
                     <Text style={styles.icon}>📌</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={searchTask}>
+                <TouchableOpacity 
+                    onPress={searchTask}
+                    accessibilityLabel="Search Task page"
+                    accessibilityHint="Go to Search Task page"
+                >
                     <Text style={styles.icon}>🔍</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={sortTasksByPriority}>
+                <TouchableOpacity 
+                    onPress={sortTasksByPriority}
+                    accessibilityLabel="Sort based on highest priority"
+                    accessibilityHint="Press to sort based on highest priority tasks at the top"
+                >
                     <MaterialIcons name="sort" size={24} color="blue" />
                 </TouchableOpacity>
             </View>
@@ -105,6 +121,8 @@ const TaskList = ({ route }) => {
                             style={{ marginRight: 10 }}
                             value={item.completed}
                             onValueChange={() => handleCompleteTask(item.id)}
+                            accessibilityLabel="Mark as completed"
+                            accessibilityHint="Click to mark task as completed"
                         />
                         <View style={{ flex: 1 }}>
                             <Text style={styles.taskText}>Topic: {item.topic}</Text>
@@ -113,15 +131,27 @@ const TaskList = ({ route }) => {
                             <Text style={styles.taskText}>Date: {item.date}</Text>
                             <Text style={styles.taskText}>Priority: {item.priority}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => handleEditTask(item)}>
+                        <TouchableOpacity 
+                            onPress={() => handleEditTask(item)}
+                            accessibilityLabel="Edit this task"
+                            accessibilityHint="Press to edit the task"
+                        >
                             <MaterialIcons name="edit" size={24} color="blue" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
+                        <TouchableOpacity 
+                            onPress={() => handleDeleteTask(item.id)}
+                            accessibilityLabel="Delete this task"
+                            accessibilityHint="Press to delete the task"
+                        >
                             <MaterialIcons name="delete" size={24} color="red" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => handlePinTask(item)}>
+                        <TouchableOpacity 
+                            onPress={() => handlePinTask(item)}
+                            accessibilityLabel="Pin this task"
+                            accessibilityHint="Press to Pin the task"
+                        >
                             <MaterialIcons 
                                 name="push-pin" 
                                 size={24} 
@@ -131,10 +161,19 @@ const TaskList = ({ route }) => {
 
                         
                         <View style={styles.moveButtonsContainer}>
-                            <TouchableOpacity onPress={() => moveTask(index, -1)}>
+                            <TouchableOpacity 
+                                onPress={() => moveTask(index, -1)}
+                                accessibilityLabel="Move task upward"
+                                accessibilityHint="Move the position of this task up"
+                            >
                                 <MaterialIcons name="arrow-upward" size={24} color="purple" />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => moveTask(index, 1)}>
+
+                            <TouchableOpacity 
+                                onPress={() => moveTask(index, 1)}
+                                accessibilityLabel="Move task below"
+                                accessibilityHint="Move the position of this task to down"
+                            >
                                 <MaterialIcons name="arrow-downward" size={24} color="purple" />
                             </TouchableOpacity>
                         </View>
@@ -145,6 +184,8 @@ const TaskList = ({ route }) => {
             <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => navigation.navigate('AddTask', { editMode: false })}
+                accessibilityLabel="Add your task"
+                accessibilityHint="Press to add the task"
             >
                 <MaterialIcons name="add" size={24} color="white" />
             </TouchableOpacity>

@@ -55,6 +55,8 @@ const AddTask = ({ navigation, route }) => {
                     placeholder="Enter Task Topic"
                     value={topic}
                     onChangeText={setTopic}
+                    accessibilityLabel="Task topic "
+                    accessibilityHint="Enter the topic or name of the task here."
                 />
 
                 <TextInput
@@ -62,6 +64,8 @@ const AddTask = ({ navigation, route }) => {
                     placeholder="Enter Task Description"
                     value={description}
                     onChangeText={setDescription}
+                    accessibilityLabel="Task description"
+                    accessibilityHint="Enter a detailed description of the task here."
                 />
 
                 <View style={styles.categoryContainer}>
@@ -74,6 +78,8 @@ const AddTask = ({ navigation, route }) => {
                                     key={index}
                                     onPress={() => setCategory(cat)}
                                     style={[styles.categoryButton, category === cat && styles.selectedCategory]}
+                                    accessibilityLabel={`Select ${cat} category`}
+                                    accessibilityHint={`Select ${cat} as the category`}
                                 >
                                     <Text style={[styles.categoryText, category === cat && styles.selectedCategoryText]}>
                                         {cat}
@@ -83,6 +89,8 @@ const AddTask = ({ navigation, route }) => {
                             <TouchableOpacity
                                 onPress={() => setIsAddingNewCategory(true)} 
                                 style={styles.addNewCategoryButton}
+                                accessibilityLabel="Add new category"
+                                accessibilityHint="Add a new category for tasks."
                             >
                                 <Text style={styles.addNewCategoryText}>+ Add New Category</Text>
                             </TouchableOpacity>
@@ -94,11 +102,24 @@ const AddTask = ({ navigation, route }) => {
                                 placeholder="Enter New Category"
                                 value={newCategory}
                                 onChangeText={setNewCategory}
+                                accessibilityLabel="New category name"
+                                accessibilityHint="Enter the name of the new category here."
                             />
-                            <TouchableOpacity onPress={handleAddNewCategory} style={styles.saveCategoryButton}>
+                            <TouchableOpacity 
+                                onPress={handleAddNewCategory} 
+                                style={styles.saveCategoryButton}
+                                accessibilityLabel="Save new category"
+                                accessibilityHint="Save the new category and add it to the list."
+                            >
                                 <Text style={styles.saveCategoryButtonText}>Save New Category</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setIsAddingNewCategory(false)} style={styles.cancelButton}>
+
+                            <TouchableOpacity 
+                                onPress={() => setIsAddingNewCategory(false)} 
+                                style={styles.cancelButton}
+                                accessibilityLabel="Cancel new category"
+                                accessibilityHint="Cancel adding a new category"
+                            >
                                 <Text style={styles.cancelButtonText}>Cancel</Text>
                             </TouchableOpacity>
                         </>
@@ -113,6 +134,8 @@ const AddTask = ({ navigation, route }) => {
                             key={level}
                             onPress={() => setPriority(level)}
                             style={[styles.priorityButton, priority === level && styles.selectedPriority]}
+                            accessibilityLabel={`Select ${level} priority`}
+                            accessibilityHint={`Set task priority to ${level}`}
                         >
                             <Text style={[styles.priorityText, priority === level && styles.selectedPriorityText]}>
                                 {level}
@@ -121,13 +144,20 @@ const AddTask = ({ navigation, route }) => {
                     ))}
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={() => setShowCalendar(true)}>
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => setShowCalendar(true)}
+                    accessibilityLabel="Select date"
+                    accessibilityHint="Open the calendar to select a date for the task"
+                >
                     <Text style={styles.buttonText}>Select Date: {date ? date.toString() : 'No date selected'}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={handleSaveTask}
+                    accessibilityLabel={route.params?.editMode ? 'Save Task' : 'Add Task'}
+                    accessibilityHint={route.params?.editMode ? 'Save the changes made to the task.' : 'Add the new task.'}
                 >
                     <Text style={styles.addButtonText}>
                         {route.params?.editMode ? 'Save Task' : 'Add Task'}
@@ -143,7 +173,11 @@ const AddTask = ({ navigation, route }) => {
                                     setShowCalendar(false);
                                 }}
                             />
-                            <TouchableOpacity onPress={() => setShowCalendar(false)}>
+                            <TouchableOpacity 
+                                onPress={() => setShowCalendar(false)}
+                                accessibilityLabel="Close calendar"
+                                accessibilityHint="Close the calendar and return to the previous screen."
+                            >
                                 <Text style={styles.modalCloseButton}>Close</Text>
                             </TouchableOpacity>
                         </View>

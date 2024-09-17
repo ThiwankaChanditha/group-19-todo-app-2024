@@ -63,9 +63,16 @@ const StatScreen = ({ navigation }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Task Statistics</Text>
             <Text style={styles.stat}>Completed Tasks: {taskStats.completed}
-              <TouchableOpacity style={styles.eyeIcon} onPress={handleViewCompletedTasks}>
+
+              <TouchableOpacity 
+                style={styles.eyeIcon} 
+                onPress={handleViewCompletedTasks}
+                accessibilityLabel="Completed Tasks page"
+                accessibilityHint="Go to completed tasks"
+                >
                 <MaterialIcons name="remove-red-eye" size={24} color="black" />
               </TouchableOpacity>
+
             </Text>
             <Text style={styles.stat}>Uncompleted Tasks: {taskStats.uncompleted}</Text>
 
@@ -82,7 +89,7 @@ const StatScreen = ({ navigation }) => {
                 accessor="population"
                 backgroundColor="transparent"
                 paddingLeft="15"
-                absolute // Displays percentages
+                absolute
             />
         </View>
     );

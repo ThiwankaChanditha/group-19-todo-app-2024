@@ -72,7 +72,12 @@ const SearchScreen = () => {
                 </TouchableOpacity>
 
                 {selectedDate && (
-                    <TouchableOpacity onPress={handleRemoveDate} style={styles.removeDateButton}>
+                    <TouchableOpacity 
+                        onPress={handleRemoveDate} 
+                        style={styles.removeDateButton}
+                        accessibilityLabel="Remove selected date"
+                        accessibilityHint="Remove the selected search date"
+                    >
                         <Text style={styles.removeDateText}>Remove Date</Text>
                     </TouchableOpacity>
                 )}
@@ -94,10 +99,19 @@ const SearchScreen = () => {
                             </View>
 
                             <View style={styles.actionsContainer}>
-                                <TouchableOpacity onPress={() => handleEditTask(item)}>
+                                <TouchableOpacity 
+                                    onPress={() => handleEditTask(item)}
+                                    accessibilityLabel="Edit selected task"
+                                    accessibilityHint="Edit the selected task"
+                                >
                                     <Icon name="edit" size={24} color="blue" />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
+
+                                <TouchableOpacity 
+                                    onPress={() => handleDeleteTask(item.id)}
+                                    accessibilityLabel="Delete selected task"
+                                    accessibilityHint="Delete the selected task"
+                                >
                                     <Icon name="delete" size={24} color="red" />
                                 </TouchableOpacity>
                             </View>
