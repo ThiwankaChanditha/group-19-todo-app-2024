@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Modal, Dimensions } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TaskContext } from '../context/TaskContext';
 import { useNavigation } from '@react-navigation/native';
+
+const screenHeight = Dimensions.get('window').height;
+const ListHeight = screenHeight * 0.6;
 
 const SearchScreen = () => {
     const { tasks, deleteTask } = useContext(TaskContext);
@@ -17,7 +20,14 @@ const SearchScreen = () => {
         const filtered = tasks.filter(task => {
             const matchesQuery = task.topic.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesDate = selectedDate ? task.date === selectedDate.toISOString().split('T')[0] : true;
-            return matchesQuery || matchesDate;
+            if (matchesDate === null) {
+                return matchesQuery;
+            } else if (searchQuery === '') {
+                return matchesDate;
+            } else {
+                return matchesQuery && matchesDate;
+            }
+            
         });
         setFilteredTasks(filtered);
     };
@@ -26,12 +36,21 @@ const SearchScreen = () => {
         filterTasks();
     }, [searchQuery, selectedDate, tasks]);
 
+    const handleSearchPress = () => {
+        setFilterTrigger(true);
+    };
+
     const handleEditTask = (task) => {
         navigation.navigate('AddTask', { task, editMode: true });
     };
 
     const handleDeleteTask = (taskId) => {
-        deleteTask(taskId);
+        navigation.navigate('DeleteTaskScreen', { taskId });
+    };
+
+    const handleRemoveDate = () => {
+        setSelectedDate(null);
+        filterTasks();
     };
 
     return (
@@ -50,23 +69,29 @@ const SearchScreen = () => {
                         {selectedDate ? selectedDate.toDateString() : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
-            </View>
 
-            <TouchableOpacity
-                style={styles.button}
-                onPress={filterTasks}
-            >
-                <Text style={styles.buttonText}>Search</Text>
-            </TouchableOpacity>
+                {selectedDate && (
+                    <TouchableOpacity onPress={handleRemoveDate} style={styles.removeDateButton}>
+                        <Text style={styles.removeDateText}>Remove Date</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
 
             {filteredTasks.length > 0 ? (
                 <FlatList
                     data={filteredTasks}
+                    style={{ height: ListHeight }}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.taskItem}>
-                            <Text style={styles.taskText}>Topic: {item.topic}</Text>
-                            <Text style={styles.taskText}>Date: {item.date}</Text>
+                            <View style={styles.taskInfo}>
+                                <Text style={styles.taskText}>Topic: {item.topic}</Text>
+                                <Text style={styles.taskText}>Description: {item.description}</Text>
+                                <Text style={styles.taskText}>Category: {item.category}</Text>
+                                <Text style={styles.taskText}>Date: {item.date}</Text>
+                                <Text style={styles.taskText}>Priority: {item.priority}</Text>
+                            </View>
+
                             <View style={styles.actionsContainer}>
                                 <TouchableOpacity onPress={() => handleEditTask(item)}>
                                     <Icon name="edit" size={24} color="blue" />
@@ -157,6 +182,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+    taskInfo: {
+        flex: 1,
+    },
     taskText: {
         fontSize: 16,
     },
@@ -190,6 +218,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'red',
     },
+    removeDateButton:{
+        marginLeft: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 10,
+        backgroundColor: 'white',
+    },
+    removeDateText:{
+        fontSize: 16,
+        color: 'red',
+    }
 });
 
 export default SearchScreen;

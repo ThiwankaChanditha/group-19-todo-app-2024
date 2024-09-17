@@ -28,7 +28,7 @@ const AddTask = ({ navigation, route }) => {
             topic,
             description,
             category: isAddingNewCategory ? newCategory : category,
-            date: date ? date.toString() : 'No date selected',
+            date: date ? date.toISOString().split('T')[0] : 'No date selected',
             priority,
         };
         const tasks = route.params?.tasks || [];

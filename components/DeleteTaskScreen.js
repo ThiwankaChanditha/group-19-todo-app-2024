@@ -1,13 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { TaskContext } from '../context/TaskContext'; 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const DeleteTaskScreen = () => {
   const { tasks, deleteTask } = useContext(TaskContext);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const navigation = useNavigation();
+  const route = useRoute();
+  const { taskId } = route.params || {};
+
+  useEffect(() => {
+    console.log('Received taskId:', taskId);
+    if (taskId) {
+      setSelectedTasks([taskId]); 
+    }
+  }, [taskId]);
 
   const handleSelectTask = (taskId) => {
     const isSelected = selectedTasks.includes(taskId);
@@ -19,6 +28,7 @@ const DeleteTaskScreen = () => {
   };
 
   const handleDelete = () => {
+    console.log('Deleting tasks with ids:', selectedTasks);
     deleteTask(selectedTasks);
     setSelectedTasks([]); 
     navigation.navigate('TaskList');  
@@ -45,7 +55,7 @@ const DeleteTaskScreen = () => {
               {selectedTasks.includes(item.id) && <Text style={styles.selectedText}>Selected</Text>}
             </TouchableOpacity>
 
-            <TouchableOpacity  onPress={() => handleEditTask(item)}>
+            <TouchableOpacity onPress={() => handleEditTask(item)}>
               <MaterialIcons name="edit" size={24} color="blue" />
             </TouchableOpacity>
           </View>
