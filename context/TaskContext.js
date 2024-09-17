@@ -18,8 +18,13 @@ export const TaskProvider = ({ children }) => {
         setPinnedTasks(pinnedTasks.filter(task => task.id !== taskId)); 
     };
 
+    const deleteTask = (taskIds) => {
+        const updatedTasks = tasks.filter((task) => !taskIds.includes(task.id));
+        setTasks(updatedTasks);  // Update the task list after deletion
+      };
+
     return (
-        <TaskContext.Provider value={{ tasks, setTasks, pinnedTasks, pinTask, unpinTask }}>
+        <TaskContext.Provider value={{ tasks, setTasks, pinnedTasks, pinTask, unpinTask, deleteTask }}>
             {children}
         </TaskContext.Provider>
     );
