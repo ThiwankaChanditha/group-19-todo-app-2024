@@ -39,6 +39,7 @@ const LoginScreen = () => {
             const { data, error } = await supabase.auth.signUp({ email, password });
             if (error) throw error;
             if (data && data.user) {
+                alert('A verification email has been sent to your email address.');
                 console.log('Signed up with:', data.user.email);
             }
         } catch (error) {
