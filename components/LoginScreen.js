@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, View, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, KeyboardAvoidingView, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import supabase from '../supabase';
 import { useNavigation } from '@react-navigation/native';
+
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -100,6 +104,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
+        width: screenWidth,
+        height: ListHeight,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     inputContainer: {
         width: '80%',
