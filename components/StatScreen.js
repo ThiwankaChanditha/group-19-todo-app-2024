@@ -4,6 +4,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { PieChart } from 'react-native-chart-kit';
 import { TaskContext } from '../context/TaskContext'; 
 
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
+
 const StatScreen = ({ navigation }) => {
     const { tasks } = useContext(TaskContext);
     const [taskStats, setTaskStats] = useState({
@@ -89,6 +93,10 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#f9f9f9',
+        width: screenWidth,
+        height: ListHeight,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     title: {
         fontSize: 24,

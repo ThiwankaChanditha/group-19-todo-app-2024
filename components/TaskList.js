@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { TaskContext } from '../context/TaskContext'; 
 
 const screenHeight = Dimensions.get('window').height;
-const ListHeight = screenHeight * 0.6;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const TaskList = ({ route }) => {
     const navigation = useNavigation();
@@ -156,6 +157,10 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#F5F5F5',
+        width: screenWidth,
+        height: ListHeight,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     header: {
         flexDirection: 'row',

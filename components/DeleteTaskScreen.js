@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { TaskContext } from '../context/TaskContext'; 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const DeleteTaskScreen = () => {
   const { tasks, deleteTask } = useContext(TaskContext);
@@ -40,7 +44,7 @@ const DeleteTaskScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Delete or Edit Tasks</Text>
+      <Text style={styles.title}>Delete Tasks</Text>
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id.toString()}
@@ -74,6 +78,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#F5F5F5',
+    width: screenWidth,
+    height: ListHeight,
+    alignContent: 'space-evenly',
+    alignSelf: 'center',
   },
   title: {
     fontSize: 24,

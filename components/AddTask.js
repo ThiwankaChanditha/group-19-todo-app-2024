@@ -3,7 +3,10 @@ import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimens
 import CalendarPicker from 'react-native-calendar-picker';
 import Modal from 'react-native-modal';
 
+
 const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const AddTask = ({ navigation, route }) => {
     const [topic, setTopic] = useState(route.params?.task?.topic || '');
@@ -156,12 +159,17 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         paddingBottom: 20,
+        height: ListHeight,
+        paddingTop: 40,
     },
     container: {
         flex: 1,
         padding: 20,
         backgroundColor: '#F5F5F5',
         minHeight: screenHeight,
+        width: screenWidth,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     input: {
         borderWidth: 1,

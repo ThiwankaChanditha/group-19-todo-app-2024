@@ -6,7 +6,8 @@ import { TaskContext } from '../context/TaskContext';
 import { useNavigation } from '@react-navigation/native';
 
 const screenHeight = Dimensions.get('window').height;
-const ListHeight = screenHeight * 0.6;
+const screenWidth = Dimensions.get('window').width* 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const SearchScreen = () => {
     const { tasks, deleteTask } = useContext(TaskContext);
@@ -133,6 +134,10 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#f9f9f9',
+        width: screenWidth,
+        height: ListHeight,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     input: {
         height: 40,
