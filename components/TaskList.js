@@ -3,23 +3,25 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from '
 import { MaterialIcons } from '@expo/vector-icons';
 import Checkbox from 'expo-checkbox';
 import { useNavigation } from '@react-navigation/native';
-import { TaskContext } from '../context/TaskContext'; 
+import { TaskContext } from '../context/TaskContext';
 
 const screenHeight = Dimensions.get('window').height;
-const screenWidth = Dimensions.get('window').width* 0.95;
+const screenWidth = Dimensions.get('window').width * 0.95;
 const ListHeight = screenHeight * 0.5;
 
 const TaskList = ({ route }) => {
     const navigation = useNavigation();
     const { tasks, setTasks, pinnedTasks, pinTask } = useContext(TaskContext);
-    const [sortedTasks, setSortedTasks] = useState(tasks);
+    const [sortedTasks, setSortedTasks] = useState([]);
     const [isSortedByPriority, setIsSortedByPriority] = useState(false);
 
     useEffect(() => {
         if (route.params?.newTask) {
             const updatedTasks = route.params.editMode
                 ? tasks.map(task => task.id === route.params.newTask.id ? route.params.newTask : task)
-                : [...tasks, { ...route.params.newTask, completed: false }];
+                : tasks.some(task => task.id === route.params.newTask.id)
+                    ? tasks
+                    : [...tasks, { ...route.params.newTask, completed: false }];
             setTasks(updatedTasks);
         }
     }, [route.params?.newTask]);
@@ -43,11 +45,13 @@ const TaskList = ({ route }) => {
     };
 
     const handleDeleteTask = (taskId) => {
-        navigation.navigate('DeleteTaskScreen', { tasks });
+        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        setTasks(updatedTasks);
+        navigation.navigate('DeleteTaskScreen', { tasks: updatedTasks });
     };
 
     const handleCompleteTask = (taskId) => {
-        const updatedTasks = tasks.map(task => 
+        const updatedTasks = tasks.map(task =>
             task.id === taskId ? { ...task, completed: !task.completed } : task
         );
         setTasks(updatedTasks);
@@ -159,7 +163,6 @@ const TaskList = ({ route }) => {
                             />
                         </TouchableOpacity>
 
-                        
                         <View style={styles.moveButtonsContainer}>
                             <TouchableOpacity 
                                 onPress={() => moveTask(index, -1)}
@@ -172,7 +175,7 @@ const TaskList = ({ route }) => {
                             <TouchableOpacity 
                                 onPress={() => moveTask(index, 1)}
                                 accessibilityLabel="Move task below"
-                                accessibilityHint="Move the position of this task to down"
+                                accessibilityHint="Move the position of this task down"
                             >
                                 <MaterialIcons name="arrow-downward" size={24} color="purple" />
                             </TouchableOpacity>

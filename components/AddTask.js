@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert, KeyboardAvoidingView } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import Modal from 'react-native-modal';
-
+import { TaskContext } from '../context/TaskContext';
 
 const screenHeight = Dimensions.get('window').height;
-const screenWidth = Dimensions.get('window').width* 0.95;
+const screenWidth = Dimensions.get('window').width * 0.95;
 const ListHeight = screenHeight * 0.5;
 
 const AddTask = ({ navigation, route }) => {
+    const { tasks, setTasks, categories, setCategories } = useContext(TaskContext);
     const [topic, setTopic] = useState(route.params?.task?.topic || '');
     const [description, setDescription] = useState(route.params?.task?.description || '');
     const [category, setCategory] = useState(route.params?.task?.category || '');
     const [date, setDate] = useState(route.params?.task?.date || null);
     const [showCalendar, setShowCalendar] = useState(false);
     const [newCategory, setNewCategory] = useState('');
-    const [categories, setCategories] = useState([]);
     const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
-    const [priority, setPriority] = useState(route.params?.task?.priority || 'Low'); 
+    const [priority, setPriority] = useState(route.params?.task?.priority || 'Low');
 
-    const handleSaveTask = () => {
 
+    const handleSaveTask = async () => {
         if (!topic.trim()) {
             Alert.alert('Error', 'Topic cannot be empty');
-            return; 
+            return;
         }
-        
+
         const newTask = {
             id: route.params?.task?.id || Date.now(),
             topic,
@@ -34,13 +34,27 @@ const AddTask = ({ navigation, route }) => {
             date: date ? date.toISOString().split('T')[0] : 'No date selected',
             priority,
         };
-        const tasks = route.params?.tasks || [];
-        navigation.navigate('TaskList', { newTask, editMode: route.params?.editMode });
+
+        try {
+            if (route.params?.editMode) {
+                const updatedTasks = tasks.map((task) =>
+                    task.id === newTask.id ? newTask : task
+                );
+                setTasks(updatedTasks); 
+            } else {
+                setTasks([...tasks, newTask]);
+            }
+
+            navigation.navigate('TaskList', { newTask, editMode: route.params?.editMode });
+        } catch (error) {
+            console.log('Error saving task:', error);
+        }
     };
 
-    const handleAddNewCategory = () => {
+    const handleAddNewCategory = async () => {
         if (newCategory.trim()) {
-            setCategories([...categories, newCategory]);
+            const updatedCategories = [...categories, newCategory];
+            setCategories(updatedCategories);
             setIsAddingNewCategory(false);
             setCategory(newCategory);
             setNewCategory('');
@@ -55,7 +69,7 @@ const AddTask = ({ navigation, route }) => {
                     placeholder="Enter Task Topic"
                     value={topic}
                     onChangeText={setTopic}
-                    accessibilityLabel="Task topic "
+                    accessibilityLabel="Task topic"
                     accessibilityHint="Enter the topic or name of the task here."
                 />
 
@@ -77,17 +91,25 @@ const AddTask = ({ navigation, route }) => {
                                 <TouchableOpacity
                                     key={index}
                                     onPress={() => setCategory(cat)}
-                                    style={[styles.categoryButton, category === cat && styles.selectedCategory]}
+                                    style={[
+                                        styles.categoryButton,
+                                        category === cat && styles.selectedCategory,
+                                    ]}
                                     accessibilityLabel={`Select ${cat} category`}
                                     accessibilityHint={`Select ${cat} as the category`}
                                 >
-                                    <Text style={[styles.categoryText, category === cat && styles.selectedCategoryText]}>
+                                    <Text
+                                        style={[
+                                            styles.categoryText,
+                                            category === cat && styles.selectedCategoryText,
+                                        ]}
+                                    >
                                         {cat}
                                     </Text>
                                 </TouchableOpacity>
                             ))}
                             <TouchableOpacity
-                                onPress={() => setIsAddingNewCategory(true)} 
+                                onPress={() => setIsAddingNewCategory(true)}
                                 style={styles.addNewCategoryButton}
                                 accessibilityLabel="Add new category"
                                 accessibilityHint="Add a new category for tasks."
@@ -105,8 +127,8 @@ const AddTask = ({ navigation, route }) => {
                                 accessibilityLabel="New category name"
                                 accessibilityHint="Enter the name of the new category here."
                             />
-                            <TouchableOpacity 
-                                onPress={handleAddNewCategory} 
+                            <TouchableOpacity
+                                onPress={handleAddNewCategory}
                                 style={styles.saveCategoryButton}
                                 accessibilityLabel="Save new category"
                                 accessibilityHint="Save the new category and add it to the list."
@@ -114,8 +136,8 @@ const AddTask = ({ navigation, route }) => {
                                 <Text style={styles.saveCategoryButtonText}>Save New Category</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity 
-                                onPress={() => setIsAddingNewCategory(false)} 
+                            <TouchableOpacity
+                                onPress={() => setIsAddingNewCategory(false)}
                                 style={styles.cancelButton}
                                 accessibilityLabel="Cancel new category"
                                 accessibilityHint="Cancel adding a new category"
@@ -125,7 +147,7 @@ const AddTask = ({ navigation, route }) => {
                         </>
                     )}
                 </View>
-
+                
                 
                 <View style={styles.priorityContainer}>
                     <Text style={styles.label}>Select Priority:</Text>
@@ -144,8 +166,8 @@ const AddTask = ({ navigation, route }) => {
                     ))}
                 </View>
 
-                <TouchableOpacity 
-                    style={styles.button} 
+                <TouchableOpacity
+                    style={styles.button}
                     onPress={() => setShowCalendar(true)}
                     accessibilityLabel="Select date"
                     accessibilityHint="Open the calendar to select a date for the task"
@@ -173,7 +195,7 @@ const AddTask = ({ navigation, route }) => {
                                     setShowCalendar(false);
                                 }}
                             />
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 onPress={() => setShowCalendar(false)}
                                 accessibilityLabel="Close calendar"
                                 accessibilityHint="Close the calendar and return to the previous screen."
@@ -215,7 +237,7 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 10,
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#3F51B5',
         marginVertical: 10,
         borderRadius: 5,
         alignItems: 'center',
@@ -224,46 +246,30 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-    addButton: {
-        backgroundColor: '#2196F3',
-        padding: 15,
-        alignItems: 'center',
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    addButtonText: {
-        color: 'white',
-        fontSize: 18,
-    },
     categoryContainer: {
-        marginTop: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 10,
-        color: '#333',
+        marginBottom: 20,
     },
     categoryButton: {
         padding: 10,
-        backgroundColor: '#ddd',
         marginVertical: 5,
+        backgroundColor: '#E0E0E0',
         borderRadius: 5,
-    },
-    categoryText: {
-        fontSize: 16,
-        color: '#333',
+        alignItems: 'center',
     },
     selectedCategory: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#64B5F6',
+    },
+    categoryText: {
+        color: 'black',
     },
     selectedCategoryText: {
         color: 'white',
     },
     addNewCategoryButton: {
+        backgroundColor: '#3F51B5',
         padding: 10,
-        backgroundColor: '#f0ad4e',
-        borderRadius: 5,
         marginTop: 10,
+        borderRadius: 5,
         alignItems: 'center',
     },
     addNewCategoryText: {
@@ -271,10 +277,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     saveCategoryButton: {
+        backgroundColor: '#4CAF50',
         padding: 10,
-        backgroundColor: '#5cb85c',
+        marginVertical: 5,
         borderRadius: 5,
-        marginTop: 10,
         alignItems: 'center',
     },
     saveCategoryButtonText: {
@@ -282,15 +288,45 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     cancelButton: {
+        backgroundColor: '#F44336',
         padding: 10,
-        backgroundColor: '#d9534f',
+        marginVertical: 5,
         borderRadius: 5,
-        marginTop: 10,
         alignItems: 'center',
     },
     cancelButtonText: {
         color: 'white',
         fontSize: 16,
+    },
+    priorityContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginVertical: 10,
+    },
+    priorityButton: {
+        padding: 10,
+        backgroundColor: '#E0E0E0',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    selectedPriority: {
+        backgroundColor: '#3F51B5',
+    },
+    priorityText: {
+        color: 'black',
+    },
+    selectedPriorityText: {
+        color: 'white',
+    },
+    addButton: {
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    addButtonText: {
+        color: 'white',
+        fontSize: 18,
     },
     modalContent: {
         backgroundColor: 'white',
@@ -299,28 +335,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalCloseButton: {
-        fontSize: 16,
-        color: 'red',
-        marginTop: 20,
-    },
-    priorityContainer: {
-        marginTop: 20,
-    },
-    priorityButton: {
-        padding: 10,
-        backgroundColor: '#ddd',
-        marginVertical: 5,
-        borderRadius: 5,
-    },
-    priorityText: {
-        fontSize: 16,
-        color: '#333',
-    },
-    selectedPriority: {
-        backgroundColor: '#4CAF50',
-    },
-    selectedPriorityText: {
-        color: 'white',
+        color: '#F44336',
+        marginTop: 10,
     },
 });
 
