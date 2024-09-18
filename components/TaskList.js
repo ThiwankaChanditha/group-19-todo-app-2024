@@ -45,9 +45,7 @@ const TaskList = ({ route }) => {
     };
 
     const handleDeleteTask = (taskId) => {
-        const updatedTasks = tasks.filter(task => task.id !== taskId);
-        setTasks(updatedTasks);
-        navigation.navigate('DeleteTaskScreen', { tasks: updatedTasks });
+        navigation.navigate('DeleteTaskScreen', { taskId });
     };
 
     const handleCompleteTask = (taskId) => {
