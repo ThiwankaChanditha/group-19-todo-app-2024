@@ -20,7 +20,7 @@ export const TaskProvider = ({ children }) => {
 
     const deleteTask = (taskIds) => {
         const updatedTasks = tasks.filter((task) => !taskIds.includes(task.id));
-        setTasks(updatedTasks);  // Update the task list after deletion
+        setTasks(updatedTasks);
       };
 
     return (
