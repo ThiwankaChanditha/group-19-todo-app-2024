@@ -45,7 +45,7 @@ const StatScreen = ({ navigation }) => {
     };
 
     const handleViewUncompletedTasks = () => {
-        navigation.navigate('UncompletedTask', { tasks });
+        navigation.navigate('IncompleteTask', { tasks });
     };
 
     const getCategoryDataForPieChart = () => {
