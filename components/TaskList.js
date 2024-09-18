@@ -130,7 +130,7 @@ const TaskList = ({ route }) => {
                             <Text style={styles.taskText}>Topic: {item.topic}</Text>
                             <Text style={styles.taskText}>Description: {item.description}</Text>
                             <Text style={styles.taskText}>Category: {item.category}</Text>
-                            <Text style={styles.taskText}>Date: {item.date}</Text>
+                            <Text style={styles.taskText}>Date: {item.date ? item.date : 'No date selected'}</Text>
                             <Text style={styles.taskText}>Priority: {item.priority}</Text>
                         </View>
                         <TouchableOpacity 

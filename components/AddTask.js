@@ -13,15 +13,17 @@ const AddTask = ({ navigation, route }) => {
     const [topic, setTopic] = useState(route.params?.task?.topic || '');
     const [description, setDescription] = useState(route.params?.task?.description || '');
     const [category, setCategory] = useState(route.params?.task?.category || '');
-    const [date, setDate] = useState(route.params?.task?.date || null);
+    const [date, setDate] =  useState(route.params?.task?.date ? new Date(route.params.task.date) : null);
     const [showCalendar, setShowCalendar] = useState(false);
     const [newCategory, setNewCategory] = useState('');
     const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
     const [priority, setPriority] = useState(route.params?.task?.priority || 'Low');
 
 
+
     const handleSaveTask = async () => {
         if (!topic.trim()) {
+            alert('Topic cannot be empty!');
             Alert.alert('Error', 'Topic cannot be empty');
             return;
         }
@@ -31,7 +33,7 @@ const AddTask = ({ navigation, route }) => {
             topic,
             description,
             category: isAddingNewCategory ? newCategory : category,
-            date: date ? date.toISOString().split('T')[0] : 'No date selected',
+            date: date ? date.toISOString().split('T')[0] : null,
             priority,
         };
 

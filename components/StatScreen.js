@@ -24,7 +24,7 @@ const StatScreen = ({ navigation }) => {
                 const uncompletedTasks = tasks.filter(task => !task.completed).length;
 
                 const categories = tasks.reduce((acc, task) => {
-                    const category = task.category || 'undefined';  // Default to 'undefined' if no category
+                    const category = task.category || 'undefined';
                     acc[category] = (acc[category] || 0) + 1;
                     return acc;
                 }, {});
@@ -44,6 +44,10 @@ const StatScreen = ({ navigation }) => {
         navigation.navigate('CompletedTask', { tasks });
     };
 
+    const handleViewUncompletedTasks = () => {
+        navigation.navigate('UncompletedTask', { tasks });
+    };
+
     const getCategoryDataForPieChart = () => {
         const categories = taskStats.categories;
         const colors = ['#f44336', '#2196f3', '#4caf50', '#ffeb3b', '#9c27b0', '#e91e63', '#00bcd4', '#ff9800'];
@@ -61,9 +65,9 @@ const StatScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            
             <Text style={styles.title}>Task Statistics</Text>
             <Text style={styles.stat}>Completed Tasks: {taskStats.completed}
-
               <TouchableOpacity 
                 style={styles.eyeIcon} 
                 onPress={handleViewCompletedTasks}
@@ -72,9 +76,18 @@ const StatScreen = ({ navigation }) => {
                 >
                 <MaterialIcons name="remove-red-eye" size={24} color="black" />
               </TouchableOpacity>
-
             </Text>
-            <Text style={styles.stat}>Uncompleted Tasks: {taskStats.uncompleted}</Text>
+
+            <Text style={styles.stat}>Uncompleted Tasks: {taskStats.uncompleted}
+              <TouchableOpacity 
+                style={styles.eyeIcon} 
+                onPress={handleViewUncompletedTasks}
+                accessibilityLabel="Uncompleted Tasks page"
+                accessibilityHint="Go to uncompleted tasks"
+                >
+                <MaterialIcons name="remove-red-eye" size={24} color="black" />
+              </TouchableOpacity>
+            </Text>
 
             <Text style={styles.subtitle}>Tasks by Category:</Text>
             <PieChart
