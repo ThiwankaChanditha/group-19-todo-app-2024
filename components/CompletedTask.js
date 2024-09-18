@@ -1,41 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import Checkbox from 'expo-checkbox';
+import { TaskContext } from '../context/TaskContext';
+import { useNavigation } from '@react-navigation/native';
 
 const CompletedTask = ({ route }) => {
+    const { tasks, setTasks, pinnedTasks, pinTask } = useContext(TaskContext);
     const [completedTasks, setCompletedTasks] = useState([]);
     const [categoryCounts, setCategoryCounts] = useState({});
-    const tasks = route.params?.tasks || [];
+    const navigation = useNavigation();
 
     useEffect(() => {
         const filteredTasks = tasks.filter(task => task.completed);
         setCompletedTasks(filteredTasks);
 
-
-        const categoryMap = filteredTasks.reduce((acc, task) => {
-            if (task.category) {
-                acc[task.category] = (acc[task.category] || 0) + 1;
-            }
-            return acc;
-        }, {});
-        setCategoryCounts(categoryMap);
     }, [tasks]);
+
+    const handleEditTask = (task) => {
+        navigation.navigate('AddTask', { task, editMode: true });
+    };
+
+    const handlePinTask = (task) => {
+        pinTask(task);
+    };
+
+    const handleDeleteTask = (taskId) => {
+        navigation.navigate('DeleteTaskScreen', { taskId });
+    };
+
+    const handleRestoreTask = (taskId) => {
+        setTasks(prevTasks => 
+            prevTasks.map(task => 
+                task.id === taskId ? { ...task, completed: false } : task
+            )
+        );
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Completed Tasks</Text>
-            <Text style={styles.subtitle}>Task Counts by Category:</Text>
-            {Object.entries(categoryCounts).map(([category, count]) => (
-                <View key={category} style={styles.categoryItem}>
-                    <Text style={styles.categoryText}>{category}: {count}</Text>
-                </View>
-            ))}
             <FlatList
                 data={completedTasks}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.taskItem}>
-                        <Text style={styles.taskText}>Topic: {item.topic}</Text>
-                        <Text style={styles.taskText}>Description: {item.description}</Text>
+                        <Checkbox
+                            style={{ marginRight: 10 }}
+                            value={item.completed}
+                            disabled={true} 
+                        />
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.taskText}>Topic: {item.topic}</Text>
+                            <Text style={styles.taskText}>Description: {item.description}</Text>
+                            <Text style={styles.taskText}>Category: {item.category}</Text>
+                            <Text style={styles.taskText}>Date: {item.date ? item.date : 'No date selected'}</Text>
+                            <Text style={styles.taskText}>Priority: {item.priority}</Text>
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => handleEditTask(item)}
+                            accessibilityLabel="Edit this task"
+                            accessibilityHint="Press to edit the task"
+                        >
+                            <MaterialIcons name="edit" size={24} color="blue" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => handleDeleteTask(item.id)}
+                            accessibilityLabel="Delete this task"
+                            accessibilityHint="Press to delete the task"
+                        >
+                            <MaterialIcons name="delete" size={24} color="red" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => handlePinTask(item)}
+                            accessibilityLabel="Pin this task"
+                            accessibilityHint="Press to Pin the task"
+                        >
+                            <MaterialIcons
+                                name="push-pin"
+                                size={24}
+                                color={pinnedTasks.find(t => t.id === item.id) ? 'green' : 'blue'}
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => handleRestoreTask(item.id)}
+                            accessibilityLabel="Restore this task"
+                            accessibilityHint="Press to move this task back to incomplete"
+                        >
+                            <MaterialIcons name="restore" size={24} color="orange" />
+                        </TouchableOpacity>
                     </View>
                 )}
             />
@@ -69,13 +125,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     taskItem: {
-        padding: 10,
+        flexDirection: 'row',
         backgroundColor: '#fff',
+        padding: 15,
         borderRadius: 5,
         marginBottom: 10,
+        alignItems: 'center',
     },
     taskText: {
         fontSize: 16,
+        color: '#333',
     },
 });
 

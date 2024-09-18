@@ -9,6 +9,7 @@ import SearchScreen from './components/SearchScreen'
 import PinnedScreen from './components/PinnedScreen'
 import DeleteTaskScreen from './components/DeleteTaskScreen'
 import CompletedTask from './components/CompletedTask'
+import IncompleteTask from './components/IncompleteTask'
 import {TaskProvider} from './context/TaskContext'
 
 const Stack = createStackNavigator();
@@ -26,7 +27,7 @@ export default function App() {
                 <Stack.Screen name="SearchScreen" component={SearchScreen} />
                 <Stack.Screen name="DeleteTaskScreen" component={DeleteTaskScreen} />
                 <Stack.Screen name="CompletedTask" component={CompletedTask} />
-                
+                <Stack.Screen name="IncompleteTask" component={IncompleteTask} />
             </Stack.Navigator>
         </NavigationContainer>
       </TaskProvider>

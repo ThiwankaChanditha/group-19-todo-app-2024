@@ -81,8 +81,8 @@ const TaskList = ({ route }) => {
     
     const calculateTimeRemaining = (dueDate) => {
         if (!dueDate) return null;
-        const currentDate = moment(); // Get the current date
-        const taskDate = moment(dueDate); // Convert the dueDate to a moment date object
+        const currentDate = moment(); 
+        const taskDate = moment(dueDate); 
 
         if (taskDate.isBefore(currentDate)) {
             const overdueDays = currentDate.diff(taskDate, 'days');
