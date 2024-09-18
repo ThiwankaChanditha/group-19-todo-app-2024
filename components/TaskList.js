@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Checkbox from 'expo-checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { TaskContext } from '../context/TaskContext';
+import moment from 'moment';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width * 0.95;
@@ -77,6 +78,21 @@ const TaskList = ({ route }) => {
         }
     };
 
+    
+    const calculateTimeRemaining = (dueDate) => {
+        if (!dueDate) return null;
+        const currentDate = moment(); // Get the current date
+        const taskDate = moment(dueDate); // Convert the dueDate to a moment date object
+
+        if (taskDate.isBefore(currentDate)) {
+            const overdueDays = currentDate.diff(taskDate, 'days');
+            return { text: `Overdue by ${overdueDays} day(s)`, overdue: true };
+        } else {
+            const remainingDays = taskDate.diff(currentDate, 'days');
+            return { text: `Time left: ${remainingDays} day(s)`, overdue: false };
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -117,69 +133,86 @@ const TaskList = ({ route }) => {
                 style={{ height: ListHeight }}
                 data={isSortedByPriority ? sortedTasks : tasks}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item, index }) => (
-                    <View style={styles.taskItem}>
-                        <Checkbox
-                            style={{ marginRight: 10 }}
-                            value={item.completed}
-                            onValueChange={() => handleCompleteTask(item.id)}
-                            accessibilityLabel="Mark as completed"
-                            accessibilityHint="Click to mark task as completed"
-                        />
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.taskText}>Topic: {item.topic}</Text>
-                            <Text style={styles.taskText}>Description: {item.description}</Text>
-                            <Text style={styles.taskText}>Category: {item.category}</Text>
-                            <Text style={styles.taskText}>Date: {item.date ? item.date : 'No date selected'}</Text>
-                            <Text style={styles.taskText}>Priority: {item.priority}</Text>
-                        </View>
-                        <TouchableOpacity 
-                            onPress={() => handleEditTask(item)}
-                            accessibilityLabel="Edit this task"
-                            accessibilityHint="Press to edit the task"
-                        >
-                            <MaterialIcons name="edit" size={24} color="blue" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            onPress={() => handleDeleteTask(item.id)}
-                            accessibilityLabel="Delete this task"
-                            accessibilityHint="Press to delete the task"
-                        >
-                            <MaterialIcons name="delete" size={24} color="red" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            onPress={() => handlePinTask(item)}
-                            accessibilityLabel="Pin this task"
-                            accessibilityHint="Press to Pin the task"
-                        >
-                            <MaterialIcons 
-                                name="push-pin" 
-                                size={24} 
-                                color={pinnedTasks.find(t => t.id === item.id) ? 'green' : 'blue'} 
+                renderItem={({ item, index }) => {
+                    const timeRemaining = calculateTimeRemaining(item.date);
+                    return (
+                        <View style={styles.taskItem}>
+                            <Checkbox
+                                style={{ marginRight: 10 }}
+                                value={item.completed}
+                                onValueChange={() => handleCompleteTask(item.id)}
+                                accessibilityLabel="Mark as completed"
+                                accessibilityHint="Click to mark task as completed"
                             />
-                        </TouchableOpacity>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.taskText}>Topic: {item.topic}</Text>
+                                <Text style={styles.taskText}>Description: {item.description}</Text>
+                                <Text style={styles.taskText}>Category: {item.category}</Text>
+                                <Text style={styles.taskText}>Date: {item.date ? item.date : 'No date selected'}</Text>
 
-                        <View style={styles.moveButtonsContainer}>
+                                
+                                {timeRemaining && (
+                                    <Text 
+                                        style={[
+                                            styles.taskText, 
+                                            { color: timeRemaining.overdue ? 'red' : 'green' }
+                                        ]}
+                                    >
+                                        {timeRemaining.text}
+                                    </Text>
+                                )}
+
+                                <Text style={styles.taskText}>Priority: {item.priority}</Text>
+                            </View>
+
                             <TouchableOpacity 
-                                onPress={() => moveTask(index, -1)}
-                                accessibilityLabel="Move task upward"
-                                accessibilityHint="Move the position of this task up"
+                                onPress={() => handleEditTask(item)}
+                                accessibilityLabel="Edit this task"
+                                accessibilityHint="Press to edit the task"
                             >
-                                <MaterialIcons name="arrow-upward" size={24} color="purple" />
+                                <MaterialIcons name="edit" size={24} color="blue" />
                             </TouchableOpacity>
 
                             <TouchableOpacity 
-                                onPress={() => moveTask(index, 1)}
-                                accessibilityLabel="Move task below"
-                                accessibilityHint="Move the position of this task down"
+                                onPress={() => handleDeleteTask(item.id)}
+                                accessibilityLabel="Delete this task"
+                                accessibilityHint="Press to delete the task"
                             >
-                                <MaterialIcons name="arrow-downward" size={24} color="purple" />
+                                <MaterialIcons name="delete" size={24} color="red" />
                             </TouchableOpacity>
+
+                            <TouchableOpacity 
+                                onPress={() => handlePinTask(item)}
+                                accessibilityLabel="Pin this task"
+                                accessibilityHint="Press to Pin the task"
+                            >
+                                <MaterialIcons 
+                                    name="push-pin" 
+                                    size={24} 
+                                    color={pinnedTasks.find(t => t.id === item.id) ? 'green' : 'blue'} 
+                                />
+                            </TouchableOpacity>
+
+                            <View style={styles.moveButtonsContainer}>
+                                <TouchableOpacity 
+                                    onPress={() => moveTask(index, -1)}
+                                    accessibilityLabel="Move task upward"
+                                    accessibilityHint="Move the position of this task up"
+                                >
+                                    <MaterialIcons name="arrow-upward" size={24} color="purple" />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity 
+                                    onPress={() => moveTask(index, 1)}
+                                    accessibilityLabel="Move task below"
+                                    accessibilityHint="Move the position of this task down"
+                                >
+                                    <MaterialIcons name="arrow-downward" size={24} color="purple" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                )}
+                    );
+                }}
             />
 
             <TouchableOpacity
