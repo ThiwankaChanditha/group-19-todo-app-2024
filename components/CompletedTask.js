@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Checkbox from 'expo-checkbox';
 import { TaskContext } from '../context/TaskContext';
 import { useNavigation } from '@react-navigation/native';
+
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width * 0.95;
+const ListHeight = screenHeight * 0.5;
 
 const CompletedTask = ({ route }) => {
     const { tasks, setTasks, pinnedTasks, pinTask } = useContext(TaskContext);
@@ -41,6 +45,7 @@ const CompletedTask = ({ route }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Completed Tasks</Text>
             <FlatList
+                style={{ height: ListHeight }}
                 data={completedTasks}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
@@ -103,7 +108,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#F5F5F5',
+        width: screenWidth,
+        height: ListHeight,
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     title: {
         fontSize: 24,
