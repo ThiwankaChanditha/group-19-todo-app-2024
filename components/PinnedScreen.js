@@ -14,9 +14,18 @@ const PinnedScreen = ({ navigation }) => {
         unpinTask(taskId); 
     };
 
+    const handleEditTask = (task) => {
+        navigation.navigate('AddTask', { task, editMode: true });
+    };
+
+    const handleDeleteTask = (taskId) => {
+        navigation.navigate('DeleteTaskScreen', { taskId });
+    };
+
     return (
         <View style={styles.container}>
             <FlatList
+                style={{ height: ListHeight }}
                 data={pinnedTasks}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
@@ -28,6 +37,23 @@ const PinnedScreen = ({ navigation }) => {
                             <Text style={styles.taskText}>Date: {item.date}</Text>
                             <Text style={styles.taskText}>Priority: {item.priority}</Text>
                         </View>
+                    
+                        <TouchableOpacity 
+                            onPress={() => handleEditTask(item)}
+                            accessibilityLabel="Edit this task"
+                            accessibilityHint="Press to edit the task"
+                        >
+                            <MaterialIcons name="edit" size={24} color="blue" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            onPress={() => handleDeleteTask(item.id)}
+                            accessibilityLabel="Delete this task"
+                            accessibilityHint="Press to delete the task"
+                        >
+                            <MaterialIcons name="delete" size={24} color="red" />
+                        </TouchableOpacity>
+                                  
                         <TouchableOpacity 
                             onPress={() => handleUnpinTask(item.id)}
                             accessibilityLabel="Unpin selected task"
@@ -35,6 +61,7 @@ const PinnedScreen = ({ navigation }) => {
                         >
                             <MaterialIcons name="push-pin" size={24} color="red" />
                         </TouchableOpacity>
+                                
                     </View>
                 )}
             />
