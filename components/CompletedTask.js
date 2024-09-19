@@ -34,11 +34,10 @@ const CompletedTask = ({ route }) => {
     };
 
     const handleRestoreTask = (taskId) => {
-        setTasks(prevTasks => 
-            prevTasks.map(task => 
-                task.id === taskId ? { ...task, completed: false } : task
-            )
+        const updatedTasks = tasks.map(task =>
+            task.id === taskId ? { ...task, completed: false } : task
         );
+        setTasks(updatedTasks);
     };
 
     return (
