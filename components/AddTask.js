@@ -66,7 +66,7 @@ const AddTask = ({ navigation, route }) => {
     return (
       <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.container}
+            style={styles.keyboardAvoidContainer}
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContainer}
@@ -107,7 +107,7 @@ const AddTask = ({ navigation, route }) => {
                                     accessibilityLabel={`Select ${cat} category`}
                                     accessibilityHint={`Select ${cat} as the category`}
                                 >
-                                <Text
+                                    <Text
                                         style={[
                                             styles.categoryText,
                                             category === cat && styles.selectedCategoryText,
@@ -225,8 +225,16 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         paddingBottom: 20,
-        height: ListHeight,
+        height: screenHeight,
         paddingTop: 40,
+    },
+    keyboardAvoidContainer: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#F5F5F5',
+        minHeight: screenHeight,      
+        alignContent: 'space-evenly',
+        alignSelf: 'center',
     },
     container: {
         flex: 1,
