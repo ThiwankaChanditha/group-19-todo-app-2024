@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Alert,  KeyboardAvoidingView, Platform } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import Modal from 'react-native-modal';
 import { TaskContext } from '../context/TaskContext';
@@ -64,7 +64,14 @@ const AddTask = ({ navigation, route }) => {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
             <View style={styles.container}>
                 <TextInput
                     style={styles.input}
@@ -100,7 +107,7 @@ const AddTask = ({ navigation, route }) => {
                                     accessibilityLabel={`Select ${cat} category`}
                                     accessibilityHint={`Select ${cat} as the category`}
                                 >
-                                    <Text
+                                <Text
                                         style={[
                                             styles.categoryText,
                                             category === cat && styles.selectedCategoryText,
@@ -209,6 +216,7 @@ const AddTask = ({ navigation, route }) => {
                 )}
             </View>
         </ScrollView>
+      </KeyboardAvoidingView>
     );
 };
 
@@ -343,3 +351,4 @@ const styles = StyleSheet.create({
 });
 
 export default AddTask;
+                                                        
